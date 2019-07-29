@@ -1,0 +1,22 @@
+/* 
+水平垂直居中
+display: flex;
+align-items: center;
+justify-content: center;
+
+居右
+flex-direction:row;
+justify-content:flex-end
+
+vertical-align:middle;
+
+overflow:hidden;
+text-overflow:ellipsis;
+white-space:nowrap;
+
+自动换行
+word-break:break-all;
+
+overflow:hidden;
+text-overflow:ellipsis;
+white-space:nowrap; */

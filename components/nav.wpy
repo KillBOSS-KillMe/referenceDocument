@@ -1,0 +1,204 @@
+<style lang="less">
+.footer {
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  background: #fff;
+  border-top: 1rpx solid #f3f1f1;
+  // padding-bottom: -120rpx;
+  z-index: 30;
+}
+
+.footer .ft_item {
+  width: 33.33%;
+  height: 100%;
+  text-align: center;
+  float: left;
+  padding: 10rpx 0;
+}
+.footer .ft_item text {
+  font-size: 25rpx;
+}
+
+.appointment {
+  position: absolute;
+  top: 200rpx;
+  left: 12.5%;
+  background: linear-gradient(to right, #f86e09, #f29200, #f86e09);
+  color: #fff;
+  border-radius: 40rpx;
+  font-size: 24rpx;
+  width: 75%;
+  height: 700rpx;
+  padding: 0 60rpx;
+  box-sizing: border-box;
+  z-index: 3;
+}
+
+.appointment_form {
+  color: #fff;
+  font-size: 24rpx;
+}
+
+.appointment_input {
+  border: 4rpx #fff dashed;
+  border-radius: 40rpx;
+  height: 80rpx;
+  box-sizing: border-box;
+  padding: 0 40rpx;
+  margin: 30rpx 0;
+  color: #fff;
+}
+
+.appointment_img {
+  position: relative;
+  top: -80rpx;
+  left: 120rpx;
+  width: 230rpx;
+  height: 124rpx;
+}
+
+.appointment_img1 {
+  position: relative;
+  top: -120rpx;
+  left: 200rpx;
+  width: 60rpx;
+  height: 100rpx;
+}
+
+.mod_btn {
+  margin: auto;
+  border-radius: 50%;
+  border: 6rpx solid #fff;
+  background: rgba(0, 0, 0, 0);
+  width: 130rpx;
+  height: 130rpx;
+  color: #fff;
+  font-size: 30rpx;
+  line-height: 120rpx;
+  font-weight: bold;
+}
+.show {
+  display: block;
+}
+.hidden {
+  display: none;
+}
+
+.footer .action .iconfont,
+.footer .action{
+  color: #7bb312 !important;
+}
+.footer,
+.footer .noAction .iconfont{
+  color: #8e8e8e !important;
+}
+</style>
+<template>
+<view>
+  <view class="footer">
+    <view class="ft_item {{navAction[0]}}">
+      <view @tap="goIndex">
+        <view class="iconfont icon-shouye"></view>
+        <text class="text">首页</text>
+      </view>
+    </view>
+    <view class="ft_item {{navAction[1]}}">
+      <view @tap="goUserList">
+        <view class="iconfont icon-kehu"></view>
+        <text class="text">客户</text>
+      </view>
+    </view>
+    <view class="ft_item {{navAction[2]}}">
+      <view @tap="goUser">
+        <view class="iconfont icon-wode"></view>
+        <text class="text">我的</text>
+      </view>
+    </view>
+  </view>
+</view>
+</template>
+<script>
+import wepy from 'wepy'
+// 校验封装
+// import check from '../mixins/check'
+export default class Nav extends wepy.component {
+  // mixins = [check]
+  data = {
+    userInfo: {},
+    guangGaoNode: null,
+    name: '',
+    phone: '',
+    id: '',
+    navAction: ['action', 'noAction', 'noAction']
+  };
+  props = {};
+  methods = {
+    // 首页
+    goIndex() {
+      this.$parent.$parent.globalData.navAction = ['action', 'noAction', 'noAction']
+      this.$emit('childFn', '/pages/index')
+    },
+    // 客户
+    goUserList() {
+      this.userInfo = this.$parent.$parent.globalData.userInfo
+      if (this.userInfo.mobile == '') {
+        wx.showModal({
+          title: '',
+          content: '请先注册',
+          success: sm => {
+            if (sm.confirm) {
+              this.$emit('childFn', '/pages/loginRegistered')
+            } else if (sm.cancel) {
+              // 用户点击取消
+            }
+          }
+        })
+        return ''
+      }
+      if (this.userInfo.store == '' || this.userInfo.store == undefined || this.userInfo.store == null ) {
+        wx.showModal({
+          title: '',
+          content: '请先绑定公司',
+          success: sm => {
+            if (sm.confirm) {
+              this.$emit('childFnOrReturn', '/pages/modifyUserInfo')
+            } else if (sm.cancel) {
+              // 用户点击取消
+            }
+          }
+        })
+        return ''
+      }
+      // 顶部导航状态初始化
+      this.$parent.$parent.globalData.navAction = ['noAction', 'action', 'noAction']
+      this.$emit('childFn', '/pages/userList')
+    },
+    // 我的
+    goUser() {
+      this.userInfo = this.$parent.$parent.globalData.userInfo
+       if (this.userInfo.mobile == '') {
+        wx.showModal({
+          title: '',
+          content: '请先注册',
+          success: sm => {
+            if (sm.confirm) {
+              this.$emit('childFn', '/pages/loginRegistered')
+            } else if (sm.cancel) {
+              // 用户点击取消
+            }
+          }
+        })
+        return ''
+      }
+      this.$parent.$parent.globalData.navAction = ['noAction', 'noAction', 'action']
+      this.$emit('childFn', '/pages/user')
+    }
+  };
+  onLoad() {
+    this.userInfo = this.$parent.$parent.globalData.userInfo
+    this.navAction = this.$parent.$parent.globalData.navAction
+    this.$apply()
+  };
+}
+</script>
